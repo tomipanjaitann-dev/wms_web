@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Warehouse Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="mb-4">Warehouse Management System</h1>
+
+    <!-- Filter Paket -->
+    <div class="mb-3">
+        <a href="/filter/All" class="btn btn-secondary btn-sm">All</a>
+        <a href="/filter/Inbound" class="btn btn-primary btn-sm">Inbound</a>
+        <a href="/filter/Outbound" class="btn btn-warning btn-sm">Outbound</a>
+        <a href="/filter/Delivered" class="btn btn-success btn-sm">Delivered</a>
+    </div>
+
+    <!-- Statistik Paket -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Inbound</h5>
+                    <p class="card-text display-6">{{ stats['Inbound'] }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-warning mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Outbound</h5>
+                    <p class="card-text display-6">{{ stats['Outbound'] }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Delivered</h5>
+                    <p class="card-text display-6">{{ stats['Delivered'] }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="/tambah" class="btn btn-success mb-3">Tambah Paket</a>
+
+    <!-- Tabel Paket -->
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>No</th>
+                <th>Nama Paket</th>
+                <th>Tracking Number</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for paket in data %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ paket['Nama Paket'] }}</td>
+                <td>{{ paket['Tracking Number'] }}</td>
+                <td>{{ paket['Status'] }}</td>
+                <td>
+                    <a href="/edit/{{ loop.index0 }}" class="btn btn-sm btn-warning">Edit</a>
+                    <a href="/hapus/{{ loop.index0 }}" class="btn btn-sm btn-danger">Hapus</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Chart Paket per Status -->
+    <canvas id="chartPaket" height="100"></canvas>
+</div>
+
+<script>
+    const ctx = document.getElementById('chartPaket').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Inbound', 'Outbound', 'Delivered'],
+            datasets: [{
+                label: 'Jumlah Paket',
+                data: [{{ stats['Inbound'] }}, {{ stats['Outbound'] }}, {{ stats['Delivered'] }}],
+                backgroundColor: ['#0d6efd','#ffc107','#198754']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                title: { display: true, text: 'Statistik Paket per Status' }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
